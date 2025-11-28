@@ -125,6 +125,8 @@ VITE_API_URL=http://localhost:3000
 
 ## Funcionalidades Implementadas
 
+### Autenticação
+
 - ✅ Registro de usuário com validação
 - ✅ Login com JWT
 - ✅ Hash de senha com bcrypt
@@ -132,8 +134,18 @@ VITE_API_URL=http://localhost:3000
 - ✅ Validação de dados com class-validator
 - ✅ Interface de login/registro responsiva
 - ✅ Persistência de autenticação (localStorage)
-- ✅ Dashboard protegido
 - ✅ Logout
+
+### Dashboard
+
+- ✅ Dashboard refinado e moderno
+- ✅ Tema inspirado no Windows Weather
+- ✅ Gradientes suaves e cores agradáveis
+- ✅ Cards com informações meteorológicas
+- ✅ Previsão para 5 dias
+- ✅ Indicadores visuais (umidade, vento, visibilidade, UV)
+- ✅ Design responsivo
+- ✅ Suporte a dark mode
 
 ## Como Usar
 
