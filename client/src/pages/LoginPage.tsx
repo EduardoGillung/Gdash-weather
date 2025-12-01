@@ -33,20 +33,22 @@ export function LoginPage({ onLoginSuccess }: LoginPageProps) {
     setLoading(true);
 
     try {
+      let response;
       if (isLogin) {
-        const response = await authService.login({
+        response = await authService.login({
           email: formData.email,
           password: formData.password,
         });
-        authService.saveAuth(response);
       } else {
-        const response = await authService.register({
+        response = await authService.register({
           name: formData.name,
           email: formData.email,
           password: formData.password,
         });
-        authService.saveAuth(response);
       }
+      
+      // Salva usuário no localStorage (apenas dados, não token)
+      authService.saveUser(response.user);
       onLoginSuccess();
     } catch (err: unknown) {
       if (err && typeof err === 'object' && 'response' in err) {

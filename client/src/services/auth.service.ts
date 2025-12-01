@@ -11,13 +11,14 @@ export interface RegisterData {
   password: string;
 }
 
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+
 export interface AuthResponse {
-  access_token: string;
-  user: {
-    id: string;
-    name: string;
-    email: string;
-  };
+  user: User;
 }
 
 export const authService = {
@@ -31,22 +32,42 @@ export const authService = {
     return response.data;
   },
 
-  logout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+  async logout(): Promise<void> {
+    try {
+      await apiClient.post('/auth/logout');
+    } catch (error) {
+      console.error('Erro ao fazer logout:', error);
+    } finally {
+      // Limpa dados locais
+      localStorage.removeItem('user');
+    }
   },
 
-  saveAuth(data: AuthResponse) {
-    localStorage.setItem('token', data.access_token);
-    localStorage.setItem('user', JSON.stringify(data.user));
+  async getMe(): Promise<User | null> {
+    try {
+      const response = await apiClient.get<{ user: User }>('/auth/me');
+      return response.data.user;
+    } catch (error) {
+      return null;
+    }
   },
 
-  getUser() {
+  saveUser(user: User) {
+    localStorage.setItem('user', JSON.stringify(user));
+  },
+
+  getUser(): User | null {
     const user = localStorage.getItem('user');
     return user ? JSON.parse(user) : null;
   },
 
-  isAuthenticated(): boolean {
-    return !!localStorage.getItem('token');
+  async isAuthenticated(): Promise<boolean> {
+    // Verifica se o cookie está válido fazendo uma requisição
+    const user = await this.getMe();
+    if (user) {
+      this.saveUser(user);
+      return true;
+    }
+    return false;
   },
 };

@@ -4,6 +4,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import type { Request } from 'express';
 import { User } from '../schemas/user.schema';
 
 @Injectable()
@@ -13,7 +14,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private config: ConfigService,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (request: Request) => {
+          // Tenta extrair do cookie primeiro
+          return request?.cookies?.access_token;
+        },
+        // Fallback para Authorization header (compatibilidade)
+        ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ]),
       secretOrKey: config.get<string>('JWT_SECRET') || 'default-secret',
     });
   }
